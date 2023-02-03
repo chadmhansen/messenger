@@ -39,7 +39,7 @@ is a link to another nifty site
 
 Send me mail at <a href="mailto:support@yourcompany.com">
 
-support@yourcompany.com</a>.
+support2@yourcompany.com</a>.
 
 <P> This is a new paragraph!
 
