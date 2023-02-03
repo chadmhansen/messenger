@@ -58,7 +58,8 @@ support2@yourcompany.com</a>.
         Enter a number: <input type="number" 
             name="number" size="20"><br><br>
               
-        <input type="submit" name="submit" value="Submit" class="cobrowse-masked">
+    <button type="submit" class="cobrowse-masked">Okay Submit</button>
+    </div>
     </form>
   
   <p> test
