@@ -19,6 +19,8 @@
 
 <TITLE>Your Title Here</TITLE>
 
+<link type='text/css' href='styles.css' rel='stylesheet' media='screen' />
+  
 </HEAD>
 
 <BODY BGCOLOR="FFFFFF">
@@ -56,7 +58,7 @@ support@yourcompany.com</a>.
         Enter a number: <input type="number" 
             name="number" size="20"><br><br>
               
-        <input type="submit" name="submit" value="Submit" classname="cobrowse-masked">
+        <input type="submit" name="submit" value="Submit" class="cobrowse-masked">
     </form>
   
 <HR>
