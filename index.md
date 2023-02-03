@@ -37,10 +37,11 @@ support@yourcompany.com</a>.
   
         Email: <input type="password" 
             name="password" size="20"><br><br>
+    
+        Enter a number: <input type="number" 
+            name="number" size="20"><br><br>
               
-        <input type="submit" name="submit" value="Submit">
-        <input type="reset" name="reset" value="Reset">
-        <button name="click">Click Me</button>
+        <input type="submit" name="submit" value="Submit" classname="cobrowse-masked">
     </form>
   
 <HR>
