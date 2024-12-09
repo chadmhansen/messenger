@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<style>
+			li{transition: all 1s ease;padding:5px;}
+			.language{
+				position: fixed;
+				right: 32px;
+				top: 24px;
+			}
+			.position{
+				margin: 10px 0 10px;
+				max-width: 450px;
+				border: 1px solid black;
+			}
+			.auth{
+				margin: 16px 0px 8px 0px;
+				padding: 8px;
+				border-radius: 4px;
+				border: 1px solid;
+				right: 0;
+				top: 24px;
+				max-width: 450px;
+			}
+			.auth-input-content{
+				padding: 6px;
+			}
+			.auth-input{
+				float: right;
+				margin-left: 36px;
+			}
+			.auth-btn{
+				border-style: solid;
+				border-width: 1px;
+				text-decoration: none;
+				padding: 4px;
+				border-color: grey;
+				border-radius: 4px;
+    			text-align: center;
+				display: block;
+				cursor: pointer;
+			}
+			.auth-btn:hover{
+				background-color: rgb(0, 153, 255);
+				color: white;
+			}
+			.auth-submit{
+				margin: 12px;
+				padding: 10px
+			}
+			.auth-input-error{
+				border: 1px solid red;
+			}
+			.auth-error{
+				color: red;
+				display: none;
+				text-align: center;
+			}
+			/* css loading dots */
+			#loading{
+				display: none;
+			}
+			.loading:after {
+				overflow: hidden;
+				display: inline-block;
+				vertical-align: bottom;
+				-webkit-animation: ellipsis steps(4,end) 900ms infinite;      
+				animation: ellipsis steps(6,end) 900ms infinite;
+				content: "\2026"; /* ascii code for the ellipsis character */
+				width: 0px;
+			}
+			@keyframes ellipsis {
+				to {
+					width: 1.25em;    
+				}
+			}
+			@-webkit-keyframes ellipsis {
+				to {
+					width: 1.25em;    
+				}
+			}
+			/* Large devices (laptops/desktops, 992px and up) */
+			@media only screen and (min-width: 992px) {
+				.auth {
+					position: fixed;
+					float: right;
+					right: 24px;
+					top: 46px;
+				}
+			}
+			/* Extra large devices (large laptops and desktops, 1200px and up) */
+			@media only screen and (min-width: 1200px) {
+				.auth {
+					position: fixed;
+					float: right;
+					right: 24px;
+					top: 46px;
+				}
+			}
+		</style>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser-polyfill.min.js"></script>
+	</head>
+	<body style="font-family:arial">
+		<h1>Single Snippet + Messenger + GPE</h1>
+		<h2 style="color:orange">For Internal Genesys Development Only - Do Not Share</h2>
+		<h3>This development page always fetches the latest build of each resource</h3>
+		<!--DeploymentID-->
+		<div>
+			<label for="#enter_deploymentId">Enter Deployment ID</label>
+			<input type="text" id="enter_deploymentId">
+			<br />
+			<label for="#enter_environment">Choose Environment</label>
+			<select id="enter_environment">
+				<option selected value="dev">Dev</option>
+				<option value="test">Test</option>
+				<option value="apne1">Prod APNE1</option>
+				<option value="apne2">Prod APNE2</option>
+				<option value="apse2">Prod APSE2</option>
+				<option value="aps1">Prod APS1</option>
+				<option value="cac1">Prod CAC1</option>
+				<option value="euc1">Prod EUC1</option>
+				<option value="euw1">Prod EUW1</option>
+				<option value="euw2">Prod EUW2</option>
+				<option value="use1">Prod USE1</option>
+				<option value="usw2">Prod USW2</option>
+				<option value="fedramp-use2">Prod FEDRAMP-USE2</option>
+				<option value="maximus-use2">Prod MAXIMUS-USE2</option>
+				<option value="sae1">Prod SAE1</option>
+				<option value="mec1">Prod MEC1</option>
+				<option value="apne3">Prod APNE3</option>
+				<option value="euc2">Prod EUC2</option>
+			</select>
+			<br />		
+			<button onclick="submit()">Submit</button>
+		</div>
+		<div class="auth">
+			<div class="auth-form">
+				<div class="auth-input-content">
+					<label for="authProvider">Choose your Auth provider</label>
+					<select id="authProvider" class="auth-input">
+						<option value="okta" selected>OKTA</option>
+						<option value="google">Google</option>
+					</select>
+				</div>
+				<div id = "okta_input_form">				
+					<div class="auth-input-content">
+						<label for="oktaURL">Your OKTA URL</label>
+						<input type="text" id="oktaURL" name="oktaURL" class="auth-input" >
+					</div>
+					<div class="auth-input-content">
+						<label for="authClientId">Client Id</label>
+						<input type="text" id="authClientId" name="authClientId" class="auth-input">
+					</div>
+						<div class="auth-input-content">
+							<label for="authScope">Choose your Auth Scope</label>
+							<select id="authScope" class="auth-input">
+								<option value="offline_access" selected>offline_access</option>
+								<option value="none">None</option>
+							</select>
+						</div>
+				</div>
+				<div id = "google_input_form" style="display: none">
+					<div class="auth-input-content">
+						<label for="googleSDK">Choose your Google SDK</label>
+						<select id="googleSDK" class="auth-input">
+							<option value="google_identity" selected>Google Identity Services</option>
+							<option value="google_legacy">Google SignIn Legacy</option>
+						</select>
+					</div>
+					<div class="auth-input-content">
+						<label for="googleClientID">Client Id</label>
+						<input type="text" id="googleClientID" name="googleClientID" class="auth-input" >
+					</div>
+				</div>
+        <div class="auth-input-content" id="pkce-flow">
+					<label for="pkce">PKCE Flow</label>
+					<input type="checkbox" id="pkce" name="pkce" class="auth-input"></br>
+				</div>
+				<div class="auth-input-content" id="optional-parameters">
+					<label for="optionalParameters">Optional Parameters</label>
+					<input type="checkbox" id="optionalParameters" name="optionalParameters" class="auth-input"></br>
+				</div>
+				<div id="showOptionalParameters" style="display:none" class="auth-input-content">
+					<span class="auth-input-content">
+						<label for="maxAge">Max Age</label>
+						<input type="number" id="maxAge" name="maxAge">
+					</span>
+				</div>
+			</div>
+			<div class="auth-submit">
+				<a id="authLoginBtn" class="auth-btn">Login</a>
+			</div>
+			<div class="auth-submit">
+				<a id="authLogoutBtn" class="auth-btn">Logout</a>
+			</div>
+			<div id="loading" class="auth-submit">
+				<div class="loading auth-btn"></div>
+			</div>
+			<div id="authError" class="auth-error"></div>
+		</div>
+		<!-- Progress Chart -->
+		<ul style="display:inline-block">
+			<li id="step-snippet-exec">Snippet Executing</li>
+			<li id="step-genesys-ready">GenesysJS Plugin Ready</li>
+			<li id="step-localstorage-ready">LocalStorage Plugin Ready</li>
+			<li id="step-cookies-ready">Cookies Plugin Ready</li>
+			<li id="step-identifiers-ready">Identifiers Plugin Ready</li>
+			<li id="step-auth-ready">Auth Plugin Ready</li>
+			<li id="step-published-authenticating">Auth Plugin Authenticating</li>
+			<li id="step-published-authenticated">Auth Plugin Authenticated</li>
+			<li id="step-queue-exec">Queue Executing</li>
+			<li id="step-messenger-helper-ready">Messenger Helper Ready</li>
+			<li id="step-messenger-ready">Messenger Plugin Ready</li>
+			<li id="step-journey-ready">Journey Plugin Ready</li>
+			<li id="step-offers-helper-ready">Offers Helper Ready</li>
+			<li id="step-offers-ready">Offers Plugin Ready</li>
+			<li id="step-cobrowse-ready">Cobrowse Plugin Ready</li>
+			<li id="step-video-ready">Video Plugin Ready</li>
+			<li id="step-markdown-ready">Markdown Plugin Ready</li>
+		</ul>
+		<div>
+			<a href="/build/reports/bundles-report.html">
+				Bundle Report
+			</a>
+		</div>
+		<script src="https://global.oktacdn.com/okta-auth-js/5.2.2/okta-auth-js.min.js" type="text/javascript"></script>
+		<script id="selectAuthprovider" type="text/javascript" defer></script>
+		<script id="googleSdk" type="text/javascript" async defer></script>
+		<script type="text/javascript">
+			const googleSdk = localStorage.getItem('googleSdk') || document.getElementById('googleSDK').value;
+			const authProviderVal = localStorage.getItem('authProvider') || document.getElementById('authProvider').value;
+			if (googleSdk == 'google_legacy' && authProviderVal == 'google') {
+				document.getElementById('selectAuthprovider').src = "./authprovider-google-legacy.min.js"
+			}  else {
+				document.getElementById('selectAuthprovider').src = "./authprovider.min.js"
+			}
+		</script>
+		<script type="text/javascript">
+			// defaults
+			var sDeploymentId = '';
+			var sEnvironment = '';
+			if (window.localStorage.getItem('genesys_deployment_id')) {
+				document.getElementById('enter_deploymentId').value = window.localStorage.getItem('genesys_deployment_id');
+			} else {
+				window.localStorage.setItem('genesys_deployment_id', sDeploymentId);
+				document.getElementById('enter_deploymentId').value = window.localStorage.getItem('genesys_deployment_id');
+			}
+			if (window.localStorage.getItem('genesys_environment')) {
+				document.getElementById('enter_environment').value = window.localStorage.getItem('genesys_environment');
+			} else {
+				window.localStorage.setItem('genesys_environment', sEnvironment);
+				document.getElementById('enter_environment').value = window.localStorage.getItem('genesys_environment');
+			}
+			if (window.localStorage.getItem('_documentDirection')) {
+				document.getElementById('document_direction').value= window.localStorage.getItem('_documentDirection');
+				document.documentElement.setAttribute("dir", document.getElementById('document_direction').value);
+				if(document.getElementById('document_direction').value == "rtl"){
+					document.querySelector(".auth").style.position="unset";
+				}
+			}
+			function submit() {
+				var deployment_id = document.getElementById('enter_deploymentId').value;
+				if (deployment_id) deployment_id = deployment_id.trim();
+				window.localStorage.setItem('genesys_deployment_id', deployment_id);
+				var environment = document.getElementById('enter_environment').value;
+				window.localStorage.setItem('genesys_environment', environment);
+				window.location.reload();
+			}
+			var DOMAINS = {
+			  'dev': 'inindca.com',
+			  'test': 'inintca.com',
+			  'apne1': 'mypurecloud.jp',
+			  'apne2': 'apne2.pure.cloud',
+			  'apse2': 'mypurecloud.com.au',
+			  'aps1': 'aps1.pure.cloud',
+			  'cac1': 'cac1.pure.cloud',
+			  'euc1': 'mypurecloud.de',
+			  'euw1': 'mypurecloud.ie',
+			  'euw2': 'euw2.pure.cloud',
+			  'use1': 'mypurecloud.com',
+			  'usw2': 'usw2.pure.cloud',
+			  'fedramp-use2': 'use2.us-gov-pure.cloud',
+			  'maximus-use2': 'use2.maximus-pure.cloud',
+			  'sae1': 'sae1.pure.cloud',
+			  'mec1': 'mec1.pure.cloud',
+			  'apne3': 'apne3.pure.cloud',
+			  'euc2': 'euc2.pure.cloud'
+			};
+			var sGenesysJSDomain = "https://apps." + DOMAINS[window.localStorage.getItem('genesys_environment')];
+			sGenesysJSPath = sGenesysJSDomain + '/genesys-bootstrap/genesys.min.js';
+		</script>
+		<script type="text/javascript" charset="utf-8">
+			(function (g, e, n, es, ys) {
+				g['_genesysJs'] = e;  g[e] = g[e] || function () {(g[e].q = g[e].q || []).push(arguments)  };
+				g[e].t = 1 * new Date();  g[e].c = es;
+				ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+			})(window, 'Genesys', sGenesysJSPath, {
+				environment: window.localStorage.getItem('genesys_environment'),
+				deploymentId: window.localStorage.getItem('genesys_deployment_id'),
+				debug: true
+			});
+		</script>
+		<!-- Queued Items -->
+		<script id="queued_commands" type="text/javascript">
+			var $ = function(id) {
+				return document.getElementById(id)
+			};
+			var mark = function(stepName) {
+				var id = 'step-' + stepName;
+				$(id).style.backgroundColor = 'green';
+				$(id).style.color = 'white';
+			};
+			mark('snippet-exec');
+			Genesys('subscribe', 'GenesysJS.ready', function(GenesysReady) {
+				mark('genesys-ready');
+				mark('queue-exec');
+			});
+			Genesys('subscribe', 'LocalStorage.ready', function() {
+				mark('localstorage-ready');
+			});
+			Genesys('subscribe', 'Cookies.ready', function() {
+				mark('cookies-ready');
+			});
+			Genesys('subscribe', 'Identifiers.ready', function() {
+				mark('identifiers-ready');
+			});
+			Genesys('subscribe', 'Auth.ready', function() {
+				mark('auth-ready');
+			});
+			Genesys('subscribe', 'Auth.authenticating', function() {
+				mark('published-authenticating');
+			});
+			Genesys('subscribe', 'Auth.authenticated', function() {
+				mark('published-authenticated');
+			});
+			Genesys('subscribe', 'MessengerHelper.ready', function() {
+				mark('messenger-helper-ready');
+			});
+			Genesys('subscribe', 'Messenger.ready', function() {
+				mark('messenger-ready');
+			});
+			Genesys('subscribe', 'Journey.ready', function() {
+				mark('journey-ready');
+			});
+			Genesys('subscribe', 'OffersHelper.ready', () => {
+				mark('offers-helper-ready');
+			});
+			Genesys('subscribe', 'Offers.ready', () => {
+				mark('offers-ready');
+			});
+			Genesys('subscribe', 'CobrowseService.ready', function() {
+				mark('cobrowse-ready');
+			});
+			Genesys('subscribe', 'VideoService.ready', function() {
+				mark('video-ready');
+			});
+			Genesys('subscribe', 'Markdown.ready', () => {
+				mark('markdown-ready');
+			});
+		</script>
+		<div>
+			<script type="text/javascript">
+				Genesys('subscribe', 'Identifiers.newSessionId', function() {
+					document.getElementById('newSession').style.display = 'inline-block';
+				});
+				Genesys('subscribe', 'Identifiers.identifiersPurged', function() {
+					document.getElementById('customerId').innerText = 'Customer Id: unknown';
+					document.getElementById('sessionId').innerText = 'Session Id: unknown';
+					document.getElementById('newSession').style.display = 'none';
+				});
+				Genesys('subscribe', 'Identifiers.ready', function() {
+					showIdentifiers();
+				});
+				function showIdentifiers() {
+					Genesys('command', 'Identifiers.getAll', {}, function (ids) {
+						document.getElementById('customerId').innerText = 'Customer Id: ' + ids.customerId;
+						document.getElementById('sessionId').innerText = 'Session Id: ' + ids.sessionId;
+					}, function (err) {
+						console.error('Error calling Identifiers.getAll', err);
+					});
+				}
+				function purgeIdentifiers() {
+					Genesys('command', 'Identifiers.purgeAll', {}, function () {
+						console.log('identifiers purged');
+					}, function (err) {
+						console.error('Error calling Identifiers.purgeAll', err);
+					});
+				}
+				function updateDocumentDirection() {
+					var sDocumentDirection = document.getElementById("document_direction").value.toLowerCase();
+					document.documentElement.setAttribute("dir", sDocumentDirection);
+					window.localStorage.setItem('_documentDirection', sDocumentDirection);
+					window.location.reload();
+				}
+			</script>
+			<h4>Identifiers</h4>
+			<ul>
+				<li id="customerId">unknown</li>
+				<li id="sessionId">unknown</li>
+				<li id="newSession" style="display:none;">* New Session *</li>
+				<li><button onclick="purgeIdentifiers()">Purge Identifiers</button><button onclick="showIdentifiers()">Refresh
+						Identifiers</button></li>
+			</ul>
+		</div>
+	</body>
+</html>
